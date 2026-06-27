@@ -1,1 +1,0 @@
-print("Brian Weather Bot 啟動成功！")
