@@ -3,7 +3,7 @@ from discord.ext import commands, tasks
 
 import config
 
-from src.earthquake import get_earthquake
+from earthquake import get_earthquake
 
 
 # =====================

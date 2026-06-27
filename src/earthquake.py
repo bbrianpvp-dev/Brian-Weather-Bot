@@ -1,9 +1,25 @@
 import requests
+import sys
+import os
+
+
+# 加入專案根目錄
+sys.path.append(
+    os.path.dirname(
+        os.path.dirname(__file__)
+    )
+)
+
 
 from config import API_KEY
 
 
-URL = "https://opendata.cwa.gov.tw/api/v1/rest/datastore/E-A0015-001"
+
+URL = (
+    "https://opendata.cwa.gov.tw/"
+    "api/v1/rest/datastore/E-A0015-001"
+)
+
 
 
 def get_earthquake():
@@ -11,8 +27,11 @@ def get_earthquake():
     try:
 
         params = {
+
             "Authorization": API_KEY,
+
             "format": "JSON"
+
         }
 
 
@@ -29,7 +48,9 @@ def get_earthquake():
         data = response.json()
 
 
-        earthquakes = data["records"]["Earthquake"]
+        earthquakes = (
+            data["records"]["Earthquake"]
+        )
 
 
         if not earthquakes:
@@ -43,34 +64,52 @@ def get_earthquake():
         info = eq["EarthquakeInfo"]
 
 
-        magnitude = info["EarthquakeMagnitude"]["MagnitudeValue"]
+
+        magnitude = (
+            info["EarthquakeMagnitude"]
+            ["MagnitudeValue"]
+        )
+
 
         depth = info["FocalDepth"]
 
-        location = info["Epicenter"]["Location"]
+
+        location = (
+            info["Epicenter"]
+            ["Location"]
+        )
+
 
         time = info["OriginTime"]
 
 
 
-        # 最大震度
-
         max_intensity = 0
 
 
-        areas = eq["Intensity"]["ShakingArea"]
+
+        areas = (
+            eq["Intensity"]
+            ["ShakingArea"]
+        )
+
 
 
         for area in areas:
 
             value = area["AreaIntensity"]
 
+
             number = int(
-                value.replace("級", "")
+                value.replace(
+                    "級",
+                    ""
+                )
             )
 
 
             if number > max_intensity:
+
                 max_intensity = number
 
 
@@ -93,9 +132,11 @@ def get_earthquake():
 
     except Exception as e:
 
+
         print(
-            "地震 API 錯誤:",
+            "地震API錯誤:",
             e
         )
+
 
         return None
