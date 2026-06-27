@@ -4,7 +4,7 @@ from config import API_KEY
 
 def get_weather():
 
-    url = "https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-C0032-001"
+    url = "https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-D0047-063"
 
     params = {
         "Authorization": API_KEY,
@@ -12,42 +12,46 @@ def get_weather():
         "locationName": "臺北市"
     }
 
+
     response = requests.get(url, params=params)
 
     data = response.json()
 
 
-    location = data["records"]["location"][0]
-
-    city = location["locationName"]
+    location = data["records"]["Locations"][0]["Location"][0]
 
 
-    weather = location["weatherElement"]
+    weather_elements = location["WeatherElement"]
 
 
     result = {
-        "city": city
+        "location": "臺北市",
+        "weather": "",
+        "rain": "",
+        "min_temp": "",
+        "max_temp": ""
     }
 
 
-    for item in weather:
+    for element in weather_elements:
 
-        name = item["elementName"]
-
-        value = item["time"][0]["parameter"]["parameterName"]
+        name = element["ElementName"]
 
 
-        if name == "Wx":
-            result["weather"] = value
+        if name == "天氣現象":
+            result["weather"] = element["Time"][0]["ElementValue"][0]["Weather"]
 
-        elif name == "PoP":
-            result["rain"] = value
 
-        elif name == "MinT":
-            result["min_temp"] = value
+        elif name == "降雨機率":
+            result["rain"] = element["Time"][0]["ElementValue"][0]["ProbabilityOfPrecipitation"]
 
-        elif name == "MaxT":
-            result["max_temp"] = value
+
+        elif name == "最低溫度":
+            result["min_temp"] = element["Time"][0]["ElementValue"][0]["MinTemperature"]
+
+
+        elif name == "最高溫度":
+            result["max_temp"] = element["Time"][0]["ElementValue"][0]["MaxTemperature"]
 
 
     return result
