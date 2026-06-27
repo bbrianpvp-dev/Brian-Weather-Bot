@@ -1,68 +1,101 @@
 import requests
+
 from config import API_KEY
+
+
+URL = "https://opendata.cwa.gov.tw/api/v1/rest/datastore/E-A0015-001"
 
 
 def get_earthquake():
 
-    url = "https://opendata.cwa.gov.tw/api/v1/rest/datastore/E-A0015-001"
+    try:
+
+        params = {
+            "Authorization": API_KEY,
+            "format": "JSON"
+        }
 
 
-    params = {
-        "Authorization": API_KEY,
-        "format": "JSON"
-    }
+        response = requests.get(
+            URL,
+            params=params,
+            timeout=10
+        )
 
 
-    response = requests.get(url, params=params)
-
-    data = response.json()
+        response.raise_for_status()
 
 
-    eq = data["records"]["Earthquake"][0]
+        data = response.json()
 
 
-    info = eq["EarthquakeInfo"]
+        earthquakes = data["records"]["Earthquake"]
 
 
-    magnitude = info["EarthquakeMagnitude"]["MagnitudeValue"]
-
-    depth = info["FocalDepth"]
-
-    location = info["Epicenter"]["Location"]
-
-    time = info["OriginTime"]
-
-
-
-    # 最大震度
-
-    max_intensity = 0
-
-
-    areas = eq["Intensity"]["ShakingArea"]
-
-
-    for area in areas:
-
-        value = area["AreaIntensity"]
-
-        number = int(value.replace("級",""))
-
-        if number > max_intensity:
-            max_intensity = number
+        if not earthquakes:
+            return None
 
 
 
-    return {
+        eq = earthquakes[0]
 
-        "time": time,
 
-        "magnitude": magnitude,
+        info = eq["EarthquakeInfo"]
 
-        "depth": depth,
 
-        "location": location,
+        magnitude = info["EarthquakeMagnitude"]["MagnitudeValue"]
 
-        "intensity": max_intensity
+        depth = info["FocalDepth"]
 
-    }
+        location = info["Epicenter"]["Location"]
+
+        time = info["OriginTime"]
+
+
+
+        # 最大震度
+
+        max_intensity = 0
+
+
+        areas = eq["Intensity"]["ShakingArea"]
+
+
+        for area in areas:
+
+            value = area["AreaIntensity"]
+
+            number = int(
+                value.replace("級", "")
+            )
+
+
+            if number > max_intensity:
+                max_intensity = number
+
+
+
+        return {
+
+            "time": time,
+
+            "magnitude": magnitude,
+
+            "depth": depth,
+
+            "location": location,
+
+            "intensity": max_intensity
+
+        }
+
+
+
+    except Exception as e:
+
+        print(
+            "地震 API 錯誤:",
+            e
+        )
+
+        return None
