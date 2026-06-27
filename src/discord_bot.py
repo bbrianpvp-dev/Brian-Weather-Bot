@@ -8,6 +8,13 @@ import config
 from earthquake import get_earthquake
 from weather import get_weather
 
+from server import start_server
+
+start_server()
+
+
+
+
 
 
 # =====================
@@ -341,6 +348,7 @@ async def daily_weather():
 
 
 
+
 # =====================
 # Bot 啟動
 # =====================
@@ -389,8 +397,6 @@ async def on_ready():
 # 啟動
 # =====================
 
-bot.run(
+start_server()
 
-    config.BOT_TOKEN
-
-)
+bot.run(config.BOT_TOKEN)
