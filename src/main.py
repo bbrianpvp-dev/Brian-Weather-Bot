@@ -1,11 +1,15 @@
 from weather import get_weather
 
 
-print("🌤️ Brian Weather Bot 啟動成功！")
+print("🌤️ Brian Weather Bot")
 
-data = get_weather()
 
-print("地點:", data["city"])
-print("溫度:", data["temperature"], "°C")
-print("天氣:", data["condition"])
-print("降雨機率:", data["rain"], "%")
+weather = get_weather()
+
+
+print()
+print("📍", weather["city"])
+print("☁️ 天氣:", weather["weather"])
+print("☔ 降雨機率:", weather["rain"], "%")
+print("🌡️ 最低溫:", weather["min_temp"], "°C")
+print("🌡️ 最高溫:", weather["max_temp"], "°C")
