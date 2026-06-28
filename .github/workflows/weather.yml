@@ -1,6 +1,6 @@
 name: Daily Weather Notification
 
-on:
+"on":
   workflow_dispatch:
 
   schedule:
