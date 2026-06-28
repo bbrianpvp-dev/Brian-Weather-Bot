@@ -1,66 +1,34 @@
 name: Earthquake Monitor
 
-
 on:
-
   workflow_dispatch:
 
-
   schedule:
-
-    # 每 5 分鐘檢查一次
     - cron: "*/5 * * * *"
 
 
-
 jobs:
-
-
   earthquake:
-
-
     runs-on: ubuntu-latest
 
-
-
     steps:
-
-
       - name: Checkout repository
-
         uses: actions/checkout@v4
 
-
-
       - name: Setup Python
-
         uses: actions/setup-python@v5
-
         with:
-
           python-version: "3.11"
 
-
-
       - name: Install dependencies
-
         run: |
-
           pip install -r requirements.txt
 
-
-
       - name: Check earthquake
-
         env:
-
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
-
           API_KEY: ${{ secrets.API_KEY }}
-
           USER_ID: ${{ secrets.USER_ID }}
 
-
         run: |
-
           python -m src.send_earthquake
